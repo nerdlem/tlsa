@@ -14,22 +14,22 @@ var UDPBUFSIZE = uint16(4096)
 var TSIGFUDGE = uint16(300)
 
 // Usage contains the TLSA Usage parameter, to be set. This value is of type
-// unit
+// uint
 var Usage = uint(1)
 
 // Selector containts the TLSA Selector parameter, to be set. This value is of
-// type unit
+// type uint
 var Selector = uint(2)
 
 // MatchingType contains TLSA MatchingType parameter, to be set. This value is
-// of type unit
+// of type uint
 var MatchingType = uint(3)
 
 // NameServer is the Global Name Server to use for sending the updates.
 var NameServer = "127.0.0.1:53"
 
-// Given a composed DNS message object (dns.Msg), sign it using TSIG and send
-// to the global name server.
+// TsigAndSend signs a composed DNS message (dns.Msg) and sends it using the
+// global name server configured via NameServer.
 func TsigAndSend(m *dns.Msg, keys []dns.KEY) error {
 
 	if m.Id == 0 {
@@ -82,9 +82,9 @@ func TsigAndSend(m *dns.Msg, keys []dns.KEY) error {
 	return nil
 }
 
-// Find the apex where the updated name is located at. The DNS query is sent
-// to the global Name Server -- expected to be the (possibly hidden) master
-// server.
+// GetZone finds the apex where the updated name is located at. A SOA DNS
+// query is sent to the global Name Server -- expected to be the (possibly
+// hidden) master server managing this zone's data.
 func GetZone(name string, ns string) (string, error) {
 
 	// Perform an initial query to assert the SOA corresponding to the name
@@ -123,9 +123,9 @@ func GetZone(name string, ns string) (string, error) {
 		name)
 }
 
-// Compose a DNS Dynamic Update to delete all TLSA RRs. This can be used to
-// wipe clean the namespace. Use TsigAndSend() to cause the update to be sent
-// to the global Name Server for processing.
+// DeleteRRs composes a DNS Dynamic Update to delete all TLSA RRs. This can be
+// used to wipe clean the namespace. Uses the TsigAndSend() helper to cause
+// the update to be sent to the global Name Server for processing.
 func DeleteRRs(pinNames []string, keys []dns.KEY) {
 	for _, domain := range pinNames {
 
@@ -157,9 +157,9 @@ func DeleteRRs(pinNames []string, keys []dns.KEY) {
 	}
 }
 
-// Compose a DNS Dynamic Updte to add a new TLSA RR. The process is meant to
-// be additive, so that multiple records can be added. The update request is
-// sent via TsigAndSend().
+// AddRR composes a DNS Dynamic Updte to add one or more TLSA RR. The process
+// is meant to be additive, so that multiple records can be appended. The
+// update request is sent via the TsigAndSend() helper.
 func AddRR(pinNames []string, keys []dns.KEY, crtSigns []string) {
 	for _, domain := range pinNames {
 		zone, err := GetZone(domain, NameServer)
@@ -193,9 +193,10 @@ func AddRR(pinNames []string, keys []dns.KEY, crtSigns []string) {
 	}
 }
 
-// Precalculate the certificate signatures from the pinned certificates to
-// use. These are suitable for setting up TLSA records without reading certs
-// multiple times.
+// CertificateSignatures precalculates the certificate signatures from the
+// pinned certificates to use. These are suitable for setting up TLSA records
+// without reading certs multiple times, as would be required by the
+// underlying functions in the dns library.
 func CertificateSignatures(certFiles []string) ([]string, error) {
 	sigs := make([]string, 0, 1)
 
