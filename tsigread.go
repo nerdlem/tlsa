@@ -1,3 +1,4 @@
+// Package tlsa provides a set of higher level functions to assist with managing TLSA records.
 package tlsa
 
 import (
