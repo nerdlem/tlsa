@@ -1,4 +1,7 @@
+[![GoDoc](https://godoc.org/github.com/nerdlem/tlsa?status.svg)](https://godoc.org/github.com/nerdlem/tlsa)
+
 # tlsa
+
 Libraries and utilities to work with TLSA DNS RRs
 
 This is a Go package that abstracts a few useful methods to Manage RNS TLSA record sets  via TSIG-Authenticated Dynamic Updates.
