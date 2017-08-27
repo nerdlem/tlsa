@@ -27,11 +27,11 @@ func init() {
 	flag.StringVar(&namesList, "names", "",
 		"Names to pin the certificate to")
 	flag.UintVar(&tlsa.Selector, "tlsa-selector", 1,
-		"TLSA selector code (see RFC-6698§2.1.2 (default 1)")
+		"TLSA selector code (see RFC-6698§2.1.2")
 	flag.UintVar(&tlsa.MatchingType, "tlsa-match", 2,
-		"TLSA Matching Type code (see RFC-6698§2.1.3 (default 2)")
+		"TLSA Matching Type code (see RFC-6698§2.1.3")
 	flag.UintVar(&tlsa.Usage, "tlsa-usage", 3,
-		"TLSA Usage code (see RFC-6698§2.1.1 (default 3)")
+		"TLSA Usage code (see RFC-6698§2.1.1")
 }
 
 func main() {
