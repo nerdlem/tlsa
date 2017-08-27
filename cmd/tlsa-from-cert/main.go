@@ -6,12 +6,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/nerdlem/tlsa"
 	"strings"
-	"tlsa"
 )
 
 var certPinFiles, namesList, nameServer, tsigKeyFile, tsigKeyName string
-var tlsaUsage, tlsaSelector, tlsaMatchingType uint
 var clearAll bool
 var pinCerts, pinNames, certNames []string
 
@@ -27,11 +26,11 @@ func init() {
 		"Authoritative nameserver to send updates to")
 	flag.StringVar(&namesList, "names", "",
 		"Names to pin the certificate to")
-	flag.UintVar(&tlsaSelector, "tlsa-selector", 1,
+	flag.UintVar(&tlsa.Selector, "tlsa-selector", 1,
 		"TLSA selector code (see RFC-6698§2.1.2 (default 1)")
-	flag.UintVar(&tlsaMatchingType, "tlsa-match", 2,
+	flag.UintVar(&tlsa.MatchingType, "tlsa-match", 2,
 		"TLSA Matching Type code (see RFC-6698§2.1.3 (default 2)")
-	flag.UintVar(&tlsaUsage, "tlsa-usage", 3,
+	flag.UintVar(&tlsa.Usage, "tlsa-usage", 3,
 		"TLSA Usage code (see RFC-6698§2.1.1 (default 3)")
 }
 
@@ -40,7 +39,7 @@ func main() {
 
 	// Read the TSIG key file to prepare the dynamic updates
 
-	m, err := tlsa.readTSIG(tsigKeyFile)
+	m, err := tlsa.ReadTSIG(tsigKeyFile)
 	if err != nil {
 		panic(fmt.Sprintf("Error processing TSIG key file: %s", err))
 	}

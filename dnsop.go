@@ -8,12 +8,23 @@ import (
 	"time"
 )
 
-var (
-	// UDP packet size advertised with EDNS(0)
-	UDPBUFSIZE = 4096
-	// Fudge interval for TSIG signatures
-	TSIGFUDGE = 300
-)
+// UDP packet size advertised with EDNS(0)
+var UDPBUFSIZE = uint16(4096)
+
+// Fudge interval for TSIG signatures
+var TSIGFUDGE = uint16(300)
+
+// TLSA Usage parameter, to be set.
+var Usage = uint(1)
+
+// TLSA Selector parameter, to be set.
+var Selector = uint(2)
+
+// TLSA MatchingType parameter, to be set.
+var MatchingType = uint(3)
+
+// Global nameserver to use for sending the updates.
+var nameServer = "127.0.0.1:53"
 
 // Given a composed DNS message object (dns.Msg), sign it using TSIG and send
 // to the global name server.
@@ -161,9 +172,9 @@ func AddRR(pinNames []string, keys []dns.KEY, crtSigns []string) {
 			rTLSA := new(dns.TLSA)
 			rTLSA.Hdr.Name = dns.Fqdn(domain)
 			rTLSA.Hdr.Rrtype = dns.TypeTLSA
-			rTLSA.Usage = uint8(tlsaUsage)
-			rTLSA.Selector = uint8(tlsaSelector)
-			rTLSA.MatchingType = uint8(tlsaMatchingType)
+			rTLSA.Usage = uint8(Usage)
+			rTLSA.Selector = uint8(Selector)
+			rTLSA.MatchingType = uint8(MatchingType)
 			rTLSA.Certificate = sign
 
 			records = append(records, rTLSA)
@@ -193,8 +204,8 @@ func CertificateSignatures(certFiles []string) ([]string, error) {
 		}
 
 		h, err := dns.CertificateToDANE(
-			uint8(tlsaSelector),
-			uint8(tlsaMatchingType), c)
+			uint8(Selector),
+			uint8(MatchingType), c)
 		if err != nil {
 			panic(err)
 		}

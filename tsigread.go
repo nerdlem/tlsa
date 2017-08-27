@@ -8,7 +8,8 @@ import (
 	"os"
 )
 
-func readTSIG(fileName string) ([]dns.KEY, error) {
+// Read and parse a Bind-formatted key file for use with TSIG.
+func ReadTSIG(fileName string) ([]dns.KEY, error) {
 
 	ret := make([]dns.KEY, 0, 1)
 

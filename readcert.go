@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 )
 
+// Read a PEM encoded certificate file and return a x509.Certificate. A
+// suitable error is returned when conditions aren't favorable.
 func GetCertificate(certificateFile string) (*x509.Certificate, error) {
 	certificateBytes, err := ioutil.ReadFile(certificateFile)
 	if err != nil {
@@ -31,7 +33,6 @@ func GetCertificate(certificateFile string) (*x509.Certificate, error) {
 
 // Return the list of domain names in the CN or alternative sections of this
 // certificate
-
 func GetDomainNamesFromCertFile(certificateFile string) ([]string, error) {
 	domains := make(map[string]bool)
 
