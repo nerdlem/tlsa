@@ -1,5 +1,3 @@
-// Utility functions dealing with X509 certificate handling / conversion /
-// data extraction.
 package tlsa
 
 import (
@@ -9,30 +7,31 @@ import (
 	"io/ioutil"
 )
 
-// Read a PEM encoded certificate file and return a x509.Certificate. A
-// suitable error is returned when conditions aren't favorable.
+// GetCertificate reads a PEM encoded certificate file and return a
+// x509.Certificate. A suitable error is returned when conditions aren't
+// favorable.
 func GetCertificate(certificateFile string) (*x509.Certificate, error) {
 	certificateBytes, err := ioutil.ReadFile(certificateFile)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to read certificate file %s: %s\n",
+		return nil, fmt.Errorf("failed to read certificate file %s: %s",
 			certificateFile, err)
 	}
 
 	block, _ := pem.Decode(certificateBytes)
 	if block == nil {
-		return nil, fmt.Errorf("Failed to parse PEM block")
+		return nil, fmt.Errorf("failed to parse PEM block")
 	}
 
 	certificate, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to parse certificate: %s\n", err)
+		return nil, fmt.Errorf("failed to parse certificate: %s", err)
 	}
 
 	return certificate, nil
 }
 
-// Return the list of domain names in the CN or alternative sections of this
-// certificate
+// GetDomainNamesFromCertFile returns the list of domain names in the CN or
+// alternative sections of this certificate
 func GetDomainNamesFromCertFile(certificateFile string) ([]string, error) {
 	domains := make(map[string]bool)
 

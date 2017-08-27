@@ -1,5 +1,3 @@
-// This package provides functions to help with managing TLSA records via DNS
-// Dynamic Updates.
 package tlsa
 
 import (
@@ -8,23 +6,27 @@ import (
 	"time"
 )
 
-// UDP packet size advertised with EDNS(0)
+// UDPBUFSIZE contains the UDP packet size advertised with EDNS(0). Defaults
+// to 4096.
 var UDPBUFSIZE = uint16(4096)
 
-// Fudge interval for TSIG signatures
+// TSIGFUDGE containts the fudge interval for TSIG signatures
 var TSIGFUDGE = uint16(300)
 
-// TLSA Usage parameter, to be set.
+// Usage contains the TLSA Usage parameter, to be set. This value is of type
+// unit
 var Usage = uint(1)
 
-// TLSA Selector parameter, to be set.
+// Selector containts the TLSA Selector parameter, to be set. This value is of
+// type unit
 var Selector = uint(2)
 
-// TLSA MatchingType parameter, to be set.
+// MatchingType contains TLSA MatchingType parameter, to be set. This value is
+// of type unit
 var MatchingType = uint(3)
 
-// Global nameserver to use for sending the updates.
-var nameServer = "127.0.0.1:53"
+// NameServer is the Global Name Server to use for sending the updates.
+var NameServer = "127.0.0.1:53"
 
 // Given a composed DNS message object (dns.Msg), sign it using TSIG and send
 // to the global name server.
@@ -56,7 +58,7 @@ func TsigAndSend(m *dns.Msg, keys []dns.KEY) error {
 		case 165:
 			algo = dns.HmacSHA512
 		default:
-			return fmt.Errorf("Unknown HMAC algorithm %d in TSIG key %s",
+			return fmt.Errorf("unknown HMAC algorithm %d in TSIG key %s",
 				t.Algorithm, t.Hdr.Name)
 		}
 
@@ -65,15 +67,15 @@ func TsigAndSend(m *dns.Msg, keys []dns.KEY) error {
 		c := new(dns.Client)
 		c.TsigSecret = map[string]string{t.Hdr.Name: t.PublicKey}
 
-		in, _, err := c.Exchange(m, nameServer)
+		in, _, err := c.Exchange(m, NameServer)
 		if err != nil {
-			return fmt.Errorf("Error processing records via %s: %s\n",
-				nameServer, err)
+			return fmt.Errorf("error processing records via %s: %s",
+				NameServer, err)
 		}
 
 		if in.Opcode != dns.OpcodeUpdate || in.Rcode != dns.RcodeSuccess {
 			return fmt.Errorf(
-				"Update response was unsuccessful (opcode=%d, rcode=%d)\n",
+				"update response was unsuccessful (opcode=%d, rcode=%d)",
 				in.Opcode, in.Rcode)
 		}
 	}
@@ -81,7 +83,7 @@ func TsigAndSend(m *dns.Msg, keys []dns.KEY) error {
 }
 
 // Find the apex where the updated name is located at. The DNS query is sent
-// to the global nameServer -- expected to be the (possibly hidden) master
+// to the global Name Server -- expected to be the (possibly hidden) master
 // server.
 func GetZone(name string, ns string) (string, error) {
 
@@ -95,10 +97,10 @@ func GetZone(name string, ns string) (string, error) {
 		m.SetQuestion(dns.Fqdn(name), dns.TypeSOA)
 		m.SetEdns0(UDPBUFSIZE, true)
 
-		in, rtt, err := c.Exchange(m, nameServer)
+		in, rtt, err := c.Exchange(m, NameServer)
 		if err != nil {
-			fmt.Printf("Error processing records via %s (rtt %d): %s\n",
-				nameServer, rtt, err)
+			fmt.Printf("error processing records via %s (rtt %d): %s\n",
+				NameServer, rtt, err)
 			continue
 		}
 
@@ -117,17 +119,17 @@ func GetZone(name string, ns string) (string, error) {
 	}
 
 	return ".", fmt.Errorf(
-		"Too many unsuccessful attempts to get SOA for %s",
+		"too many unsuccessful attempts to get SOA for %s",
 		name)
 }
 
 // Compose a DNS Dynamic Update to delete all TLSA RRs. This can be used to
 // wipe clean the namespace. Use TsigAndSend() to cause the update to be sent
-// to the global nameServer for processing.
+// to the global Name Server for processing.
 func DeleteRRs(pinNames []string, keys []dns.KEY) {
 	for _, domain := range pinNames {
 
-		zone, err := GetZone(domain, nameServer)
+		zone, err := GetZone(domain, NameServer)
 		if err != nil {
 			panic(err)
 		}
@@ -160,7 +162,7 @@ func DeleteRRs(pinNames []string, keys []dns.KEY) {
 // sent via TsigAndSend().
 func AddRR(pinNames []string, keys []dns.KEY, crtSigns []string) {
 	for _, domain := range pinNames {
-		zone, err := GetZone(domain, nameServer)
+		zone, err := GetZone(domain, NameServer)
 		if err != nil {
 			panic(err)
 		}

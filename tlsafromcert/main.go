@@ -10,20 +10,20 @@ import (
 	"strings"
 )
 
-var certPinFiles, namesList, nameServer, tsigKeyFile, tsigKeyName string
+var certPinFiles, namesList, tsigKeyFile, tsigKeyName string
 var clearAll bool
 var pinCerts, pinNames, certNames []string
 
 // Initialize command line flags ahead of time.
 func init() {
 	flag.StringVar(&certPinFiles, "pin-certs", "",
-		"X509 certificates file to pin via TLSA (comma separated)")
+		"X.509 certificates file to pin via TLSA (comma separated)")
 	flag.StringVar(&tsigKeyFile, "tsig-file", "tsig.key",
 		"TSIG key file")
 	flag.BoolVar(&clearAll, "clear-all", false,
 		"Clear all existing TLSA records")
-	flag.StringVar(&nameServer, "ns", "127.0.0.1:53",
-		"Authoritative nameserver to send updates to")
+	flag.StringVar(&tlsa.NameServer, "ns", "127.0.0.1:53",
+		"Authoritative name server to send updates to")
 	flag.StringVar(&namesList, "names", "",
 		"Names to pin the certificate to")
 	flag.UintVar(&tlsa.Selector, "tlsa-selector", 1,

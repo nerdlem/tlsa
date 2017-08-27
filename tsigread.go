@@ -1,5 +1,3 @@
-// Utilities dealing with recovering TSIG keys from Bind-formatted key files
-// in the filesystem.
 package tlsa
 
 import (
