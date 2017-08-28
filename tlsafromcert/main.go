@@ -11,7 +11,7 @@ import (
 )
 
 var certPinFiles, namesList, tsigKeyFile, tsigKeyName string
-var clearAll bool
+var clearAll, dryRun bool
 var pinCerts, pinNames, certNames []string
 
 // Initialize command line flags ahead of time.
@@ -22,6 +22,8 @@ func init() {
 		"TSIG key file")
 	flag.BoolVar(&clearAll, "clear-all", false,
 		"Clear all existing TLSA records")
+	flag.BoolVar(&dryRun, "dry-run", false,
+		"Output information about what would be done but make no changes")
 	flag.StringVar(&tlsa.NameServer, "ns", "127.0.0.1:53",
 		"Authoritative name server to send updates to")
 	flag.StringVar(&namesList, "names", "",
@@ -71,11 +73,32 @@ func main() {
 		}
 	}
 
+	if dryRun {
+		for _, k := range m {
+			fmt.Printf("dry-run: Will use TSIG key %s\n", k.PublicKey)
+		}
+	}
+
 	if clearAll {
-		tlsa.DeleteRRs(pinNames, m)
+		if dryRun {
+			for _, n := range pinNames {
+				fmt.Printf("dry-run: Clear all TLSA RRs for %s\n", n)
+			}
+		} else {
+			tlsa.DeleteRRs(pinNames, m)
+		}
 	}
 
 	if len(crtSigns) != 0 {
-		tlsa.AddRR(pinNames, m, crtSigns)
+		if dryRun {
+			for _, n := range pinNames {
+				for _, s := range crtSigns {
+					fmt.Printf("dry-run: Add TLSA RRs for %s: %s\n",
+						n, s)
+				}
+			}
+		} else {
+			tlsa.AddRR(pinNames, m, crtSigns)
+		}
 	}
 }
