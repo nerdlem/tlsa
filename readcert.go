@@ -28,8 +28,6 @@ func GetCertificate(certificateFile string) (*x509.Certificate, error) {
 			certificateFile)
 	}
 
-	fmt.Printf("dry-run: file %s is of type %s\n", certificateFile, block.Type)
-
 	var certificate *x509.Certificate
 
 	switch block.Type {
