@@ -113,6 +113,13 @@ func GetZone(name string, ns string) (string, error) {
 			}
 		}
 
+		for _, rr := range in.Answer {
+			h := rr.Header()
+			if h.Class == dns.ClassINET && h.Rrtype == dns.TypeSOA {
+				return h.Name, nil
+			}
+		}
+
 		panic(fmt.Sprintf(
 			"SOA response for %s had no usable authority records",
 			name))
