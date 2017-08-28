@@ -12,7 +12,7 @@ import (
 // When fed a PEM encoded certificate, the x509.Certificate object is
 // returned. If fed a public key in PEM format, a pseudo x509.Certificate is
 // returned, with only the public key field populated. This is enough to
-// calculate the TLSA signature. return a x509.Certificate.
+// calculate the TLSA signature.
 //
 // Suitable errors are returned when conditions aren't favorable.
 func GetCertificate(certificateFile string) (*x509.Certificate, error) {
