@@ -213,11 +213,18 @@ func CertificateSignatures(certFiles []string) ([]string, error) {
 			panic(err)
 		}
 
+		if c.Raw == nil && Selector == 0 {
+			return nil, fmt.Errorf(
+				"TLSA selector %d requires certificates, not public keys",
+				Selector)
+		}
+
 		h, err := dns.CertificateToDANE(
 			uint8(Selector),
-			uint8(MatchingType), c)
+			uint8(MatchingType),
+			c)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		sigs = append(sigs, h)
