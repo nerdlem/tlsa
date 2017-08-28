@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/nerdlem/tlsa"
+	"os"
 	"strings"
 )
 
@@ -101,4 +102,6 @@ func main() {
 			tlsa.AddRR(pinNames, m, crtSigns)
 		}
 	}
+
+	os.Exit(0)
 }
