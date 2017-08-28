@@ -16,7 +16,8 @@ if err != nil {
 }
    ⋮
 // Calculate the TLSA certificate signatures for a set of existing certificates
-pinCerts := []string{"cert1.pem", "cert2.pem"}
+// or public key files
+pinCerts := []string{"cert1.pem", "cert2.pem", "pubkey1.pem"}
 crtSigns, err = tlsa.CertificateSignatures(pinCerts)
 if err != nil {
  panic(err)
@@ -68,7 +69,7 @@ zone "lem.click" {
 
 ## Invoking tlsafromcert
 
-`tlsafromcert` needs access to your X.509 certificates and the `TSIG` key file to authenticate the request. You'll also need to know the IP address where your authoritative name server is listening and of course, the DNS name of the services you intend to protect with `TLSA`.
+`tlsafromcert` needs access to your X.509 certificates or public keys; and the `TSIG` key file to authenticate the request. You'll also need to know the IP address where your authoritative name server is listening and of course, the DNS name of the services you intend to protect with `TLSA`.
 
 To obtain the server certificate you can use a command such as this:
 
@@ -76,6 +77,14 @@ To obtain the server certificate you can use a command such as this:
 openssl s_client -showcerts -servername lem.click -connect lem.click:443 </dev/null 2>/dev/null \
     | openssl x509 -outform pem > lem-click.pem
 ```
+
+Alternatively, you can capture the public key as follows:
+
+```
+openssl s_client -showcerts -servername lem.click -connect lem.click:443 </dev/null 2>/dev/null \
+    | openssl x509 -pubkey -noout -outform pem > lem-click-key.pem
+```
+
 
 You can of course simply copy the right file from your server although pulling the cert from the actual web server or other service can be extremely helpful. You can easily check which DNS names are protected by this certificate as follows:
 
