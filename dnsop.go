@@ -10,14 +10,14 @@ import (
 // to 4096.
 var UDPBUFSIZE = uint16(4096)
 
-// TSIGFUDGE containts the fudge interval for TSIG signatures
+// TSIGFUDGE contains the fudge interval for TSIG signatures
 var TSIGFUDGE = uint16(300)
 
 // Usage contains the TLSA Usage parameter, to be set. This value is of type
 // uint
 var Usage = uint(1)
 
-// Selector containts the TLSA Selector parameter, to be set. This value is of
+// Selector contains the TLSA Selector parameter, to be set. This value is of
 // type uint
 var Selector = uint(2)
 
