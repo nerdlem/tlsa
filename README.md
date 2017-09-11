@@ -1,5 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/nerdlem/tlsa?status.svg)](https://godoc.org/github.com/nerdlem/tlsa)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nerdlem/tlsa)](https://goreportcard.com/report/github.com/nerdlem/tlsa)
+[![Build Status](https://travis-ci.org/nerdlem/tlsa.svg?branch=master)](https://travis-ci.org/nerdlem/tlsa)
 
 # tlsa
 
